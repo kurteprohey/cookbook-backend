@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  cookbook-backend:
+    image: cookbook-backend:latest
+    container_name: cookbook-backend
+    depends_on:
+      - cookbook-mysql
+      - cookbook-elasticsearch
+    ports:
+      - "8080:8080"
+      - "9999:9999"
+    environment:
+      SPRING_PROFILES_ACTIVE: production
+  cookbook-elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.2
+    container_name: cookbook-elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      cluster.name: cookbook
+      network.host: 0.0.0.0
+      transport.host: localhost
+      xpack.graph.enabled: "false"
+      xpack.ml.enabled: "false"
+      xpack.monitoring.enabled: "false"
+      xpack.security.enabled: "false"
+      xpack.watcher.enabled: "false"
+  cookbook-mysql:
+    image: mysql:5.7
+    container_name: cookbook-mysql
+    ports:
+      - "3306:3306"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES UTF8;'
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: portfolio
