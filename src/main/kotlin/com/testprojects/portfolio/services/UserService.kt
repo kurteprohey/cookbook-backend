@@ -16,7 +16,7 @@ class UserService(
         val securityService: SecurityService
 ) {
     private fun findCurrentUser() = securityService.getLoggedInUsername()
-            .let { repository.findByEmail(it)!! }
+        .let { repository.findByEmail(it) ?: throw Exception("can not find a user") }
 
     fun signin(user: UserCreateUTO): User {
         val u = User(
